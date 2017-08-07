@@ -4,16 +4,17 @@ This will be a small app to pull channel last message date and save it into a da
 The info in this database will then be used to figure out if a channel can be archived and then archive it
 This is needed because Tumblr has 2 day retention on most of our channels, which makes them show up as inactive when they may actually be in use. 
 
-Writing in Ruby 2.4<br>
-Will try and use [slack-ruby-client](https://github.com/slack-ruby/slack-ruby-client)
+Writing in Ruby 2.4.1<br>
+Requires [slack-ruby-client](https://github.com/slack-ruby/slack-ruby-client)
+
 Need to include a dry-run scenario somehow
 
 
-+ Using channels.list, request all channels from Slack
++ Pull list of channels
 + For each channel in that list:
-  + if Channel is already archived: 
-    + Output channel name and archived status to log ("X" channel is already Archived")
-    + Send update to DB:  channel name, channel ID#, archived=true, last updated (timestamp of when the entry was last touched)
+  + if Channel is already archived ignore it
+    + Output channel name and archived status to log ("X" channel is already Archived and will be ignored")
+    + Check DB for Channel and remove it
   + if Channel is not archived:
     + For each un-archived channel, get a channel.info request
     + Iterate over the request and pull out the channel name, channel ID and the latest message timestamp.
