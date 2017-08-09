@@ -1,2 +1,0 @@
-require 'slack-ruby-client'
-
