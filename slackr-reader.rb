@@ -8,17 +8,15 @@ puts "Beginning Reader run."
 # currently not including 'bot_message' since we have lots of channels that use mostly or only
 subtype_blacklist = ['channel_leave', 'channel_join', 'channel_name', 'channel_purpose', 'channel_topic']
 channels = []
+prev_run_data = []
 
-# load existing data from csv into array of hashes or create a new blank file.
+# load existing data from csv into array of hashes
 if File.exists?("slackr-db.csv")
   data = CSV.read("slackr-db.csv", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
   prev_run_data = data.map { |d| d.to_hash }
-else
-  data = File.new("slackr-db.csv", "w+")
-  data << "channel_name,channel_id,channel_last_active_date"
-  prev_run_data = []
 end
 
+# load env api token
 Slack.configure do |config|
   config.token = ENV['SLACK_API_TOKEN']
   fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
@@ -78,7 +76,7 @@ sleep 1
 end
 
 # write to csv, channel name, channel id, last message date
-CSV.open("slackr-db.csv", "wb") do |csv|
+CSV.open("slackr-db.csv", "a+") do |csv|
   csv << channels.first.keys
   channels.each do |channel|
     csv << channel.values
@@ -86,22 +84,3 @@ CSV.open("slackr-db.csv", "wb") do |csv|
 end
 
 puts "Done with Reader run!"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
