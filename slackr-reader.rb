@@ -1,6 +1,7 @@
 require 'slack-ruby-client'
 require 'date'
 require 'csv'
+require 'time'
 
 puts "Beginning Reader run."
 
@@ -12,7 +13,8 @@ prev_run_data = []
 
 # load existing data from csv into array of hashes
 if File.exists?("slackr-db.csv")
-  data = CSV.read("slackr-db.csv", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
+  File.rename("slackr-db.csv", "slackr-db.last")
+  data = CSV.read("slackr-db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
   prev_run_data = data.map { |d| d.to_hash }
 end
 
@@ -72,11 +74,11 @@ end
 channels.push({channel_name: channel_name, channel_id: channel_id, channel_last_active_date: channel_last_active_date})
 
 # sleep for Slack's API rate limit of 1 call per second.
-sleep 1
+sleep 1.5
 end
 
 # write to csv, channel name, channel id, last message date
-CSV.open("slackr-db.csv", "a+") do |csv|
+CSV.open("slackr-db.csv", "w") do |csv|
   csv << channels.first.keys
   channels.each do |channel|
     csv << channel.values

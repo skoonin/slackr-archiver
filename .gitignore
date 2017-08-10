@@ -26,3 +26,5 @@ Temporary Items
 .apdisk
 .idea
 slackr-db.csv
+slackr-archiver.log
+slackr-db.last
