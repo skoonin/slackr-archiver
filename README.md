@@ -1,4 +1,4 @@
-#### SLACKR Archiver
+#### SLACKR Auto-Archiver
 
 A small app built to Auto-Archive Slack Channels. 
 
@@ -22,9 +22,13 @@ require 'highline/import'<br></code></pre>
 
 ## Proper Usage
 
+# RECON_SLACKR
+
 The **Recon** app creates a file called <code>slackr_channels.db</code>.  It stores each public channels last active message date. 
 
 It will also create a copy of the last day's run db to use as a comparison and backup, <code>slackr_channels.db.last</code>. If it finds that a message has a last active date in the db, it won't erase it and start it fresh as if the channel is new. **It should be setup to run daily via cron.**
+
+# ARCHIVER_SLACKR
 
 The **Archiver** app can be used to either:
 
@@ -36,7 +40,7 @@ The **Archiver** app can be used to either:
   + You can alter the Inactivity time in <code>archiver_slackr.rb</code>
 
   <pre><code>
-  Usage:  archiver_slackr <flag>"
+  Usage:  archiver_slackr <flag>
       -d, --dry-run                 runs in DRY-RUN mode (do this first! no channels will be archived)
       -n, --notify                  runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)
                                           *** NOTE: this will reset a channels `Days Till Archive` to the day you run this
