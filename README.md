@@ -3,14 +3,14 @@
 A small app built to Auto-Archive Slack Channels. 
 
 *Context:* This for a specific use case where my company has a 2 day retention policy in Slack. In order to properly track channel history,
-the Recon app runs daily and stores the newest message date from the last 2 days OR the date from a small "db" csv file.  This is needed because once retention is lost, a channel's activity history shows up as empty (no date available.)
+the Recon app runs daily and stores the newest message date from the last 2 days OR the date from a small "db" csv file.  This is needed because once retention is lost, a channel's activity history shows up as empty (no date available).
 
 The archiver app then allows a user to either notify channels or archive channels. 
 
-## Requirements
+### Requirements
 
 Writing in Ruby 2.4.1<br>
-Requires [slack-ruby-client](https://github.com/slack-ruby/slack-ruby-client)
+Requires [slack-ruby-client](https://github.com/slack-ruby/slack-ruby-client)<br>
 Slack API Token (Bot Integration)
 
 Gems:
@@ -22,13 +22,13 @@ require 'highline/import'<br></code></pre>
 
 ## Proper Usage
 
-### RECON_SLACKR
+#### RECON_SLACKR
 
 The **Recon** app creates a file called <code>slackr_channels.db</code>.  It stores each public channels last active message date. 
 
 It will also create a copy of the last day's run db to use as a comparison and backup, <code>slackr_channels.db.last</code>. If it finds that a message has a last active date in the db, it won't erase it and start it fresh as if the channel is new. **It should be setup to run daily via cron.**
 
-### ARCHIVER_SLACKR
+#### ARCHIVER_SLACKR
 
 The **Archiver** app can be used to either:
 
@@ -48,18 +48,18 @@ The **Archiver** app can be used to either:
       -h, --help, ?                 this handy help screen
       </code></pre>
 
-## Whitelist
+### Whitelist
 
 There is a whitelist file used to prevent specific channels from being archived.  Edit the file <code>whitelist.txt</code> for any changes.  If the file is missing it will be created upon first run. 
 
-## Logging
+### Logging
 
 All activity is logged in the files: 
 + **slackr_archiver.log** - Detailed logs of any archiver run, including dry runs. 
 + **slackr_archived_channels.log** - A list of all channels that were archived and the date it happened. Once a channel is archived, it will no longer be in the DB. 
 + **slackr_channels.db** - This is the CSV "db" file created by Recon and used by Archiver. 
 
-## Future updates: 
+### Future updates: 
 + Allow message to be specified on the command line
 + Allow number of recent messages parsed to be specified on command line
 + Create a way to not reset notified channels activity for 30 days after it's been done. 
