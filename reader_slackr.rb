@@ -12,8 +12,8 @@ channels = []
 
 # load existing data from csv into array of hashes
 if File.exists?("slackr_channels.db")
-  File.rename("slackr_channels.db", "slackr_channels_db.last")
-  data = CSV.read("slackr_channels_db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
+  File.rename("slackr_channels.db", "slackr_channels.db.last")
+  data = CSV.read("slackr_channels.db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
   prev_run_data = data.map { |d| d.to_hash }
 end
 

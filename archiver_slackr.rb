@@ -4,7 +4,7 @@ require 'csv'
 require 'logger'
 
 # logging options
-archiver_log = Logger.new("slackr-archiver.log", 6, 50240000)
+archiver_log = Logger.new("slackr_archiver.log", 6, 50240000)
 archiver_log.datetime_format = '%Y-%m-%d %H:%M:%S'
 archiver_log.formatter = proc do |severity, datetime, progname, msg|
    "#{datetime} -- :  #{msg}\n"
@@ -23,14 +23,16 @@ run_date = Time.now
 
 # command line arguments info
 if ["--help", "-h", "?", nil].include? ARGV[0] 
+	STDERR.puts("Missing Flag.\n\n")
 	puts "The Slackr Archiver\n"
-	puts "v1, 2017"
-	puts "Please specify the flavor of Archiver you'd like to run.\n"
-	puts "Usage:   -d, --dry-run ....................... runs in DRY-RUN mode (do this first! no channels will be archived)"
-	puts "         -n, --notify ........................ runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)"
-	puts "                                                 *** NOTE: this will reset a channels `Days Till Archive` to the day you run this"
-	puts "         -a, --archive, --active ............. runs in ACTIVE mode. (this will archive channels)"
-	puts "         -h, --help, ? ....................... this handy help screen\n"
+	puts "v1, 2017\n\n"
+	puts "Usage:  archiver-slackr <flag>"
+	puts "    -d, --dry-run ................. runs in DRY-RUN mode (do this first! no channels will be archived)"
+	puts "    -n, --notify .................. runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)"
+	puts "                                        *** NOTE: this will reset a channels `Days Till Archive` to the day you run this"
+	puts "    -a, --archive, --active ....... runs in ACTIVE mode. (this will archive channels)"
+	puts "    -h, --help, ? ................. this handy help screen\n\n"
+	exit(false)		
 elsif ["-d", "--dry-run"].include? ARGV[0]
 	puts "Now running Slackr Archivr. \nYou have selected DRY-RUN mode."
 	run_mode = "DRY"
