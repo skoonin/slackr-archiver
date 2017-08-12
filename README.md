@@ -3,8 +3,9 @@
 A small app built to Auto-Archive Slack Channels. 
 
 *Context:* This for a specific use case where my company has a 2 day retention policy in Slack. In order to properly track channel history,
-the Recon app runs daily and stores the newest message date from the last 2 days OR the date from a small "db" csv file. The archiver app then allows 
-a user to either notify channels or archive channels. 
+the Recon app runs daily and stores the newest message date from the last 2 days OR the date from a small "db" csv file.  This is needed because once retention is lost, a channel's activity history shows up as empty (no date available.)
+
+The archiver app then allows a user to either notify channels or archive channels. 
 
 ## Requirements
 
@@ -21,7 +22,9 @@ require 'highline/import'<br></code></pre>
 
 ## Proper Usage
 
-The *Recon* app should be setup to run daily via cron. It creates a file called <code>slackr_channels.db</code>.  It will also create a cop of the last day's run db to use as a comparison and backup, <code>slackr_channels.db.last</code>.
+The **Recon** app creates a file called <code>slackr_channels.db</code>.  It stores each public channels last active message date. 
+
+It will also create a copy of the last day's run db to use as a comparison and backup, <code>slackr_channels.db.last</code>. If it finds that a message has a last active date in the db, it won't erase it and start it fresh as if the channel is new. **It should be setup to run daily via cron.**
 
 The **Archiver** app can be used to either:
 
