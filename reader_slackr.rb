@@ -40,7 +40,7 @@ non_archived_channels.each do |channel|
     msg_date = msg['ts']
     msg_text = msg['text']
     msg_subtype = msg['subtype']
-    msg_hdate = Time.at(msg_date.to_i).utc.to_datetime
+    msg_hdate = Time.at(msg_date.to_i).to_datetime
 
     if !subtype_blacklist.include?(msg_subtype)
       if msg_hdate >= Time.now - 48.hours
