@@ -9,12 +9,11 @@ puts "Beginning Reader run."
 # currently not including 'bot_message' since we have lots of channels that use mostly or only
 subtype_blacklist = ['channel_leave', 'channel_join', 'channel_name', 'channel_purpose', 'channel_topic']
 channels = []
-prev_run_data = []
 
 # load existing data from csv into array of hashes
-if File.exists?("slackr-db.csv")
-  File.rename("slackr-db.csv", "slackr-db.last")
-  data = CSV.read("slackr-db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
+if File.exists?("slackr_channels.db")
+  File.rename("slackr_channels.db", "slackr_channels_db.last")
+  data = CSV.read("slackr_channels_db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
   prev_run_data = data.map { |d| d.to_hash }
 end
 
@@ -29,7 +28,7 @@ client = Slack::Web::Client.new
 # get all active (non-archived) channels so we can get their id's
 non_archived_channels = client.channels_list.channels.select { |data| !data.is_archived }
 
-# for each channel, get it's ID
+# for each channel, get it's ID and some other identifiers
 non_archived_channels.each do |channel|
   channel_id = channel['id']
   channel_name = channel['name']
@@ -55,11 +54,11 @@ channel_last_active_date = recent_msg_dates[0]
 
 # if a channel's last active date is nil, check the db for a date, if there is none, set it today.
 # if there is an existing date in the db, set channel_last_active_date to the date in the db.
-prev_run_data_arr = prev_run_data.select { |x| x[:channel_id] == channel_id }
+prev_run_data = prev_run_data.select { |x| x[:channel_id] == channel_id }
 
-if !prev_run_data_arr[0].nil?
-  prev_run_data_hash = prev_run_data_arr[0].to_hash
-  channel_prev_run_active_date = prev_run_data_hash[:channel_last_active_date]
+if !prev_run_data[0].nil?
+  prev_run_data = prev_run_data[0].to_hash
+  channel_prev_run_active_date = prev_run_data[:channel_last_active_date]
 end
 
 if channel_last_active_date.nil?
@@ -78,7 +77,7 @@ sleep 1.5
 end
 
 # write to csv, channel name, channel id, last message date
-CSV.open("slackr-db.csv", "w") do |csv|
+CSV.open("slackr_channels.db", "w") do |csv|
   csv << channels.first.keys
   channels.each do |channel|
     csv << channel.values

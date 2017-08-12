@@ -28,3 +28,7 @@ Temporary Items
 slackr-db.csv
 slackr-archiver.log
 slackr-db.last
+slackr_archived_channels.log
+slackr_channels_db.last
+slackr_channels.db.last
+slackr_channels.db
