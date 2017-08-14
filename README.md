@@ -12,7 +12,6 @@ The archiver app then allows a user to either notify channels or archive channel
 
 Writing in Ruby 2.4.1<br>
 Requires [slack-ruby-client](https://github.com/slack-ruby/slack-ruby-client)<br>
-Slack API Token (Bot Integration)
 
 Gems:
 <pre><code>require 'slack-ruby-client'<br>
@@ -21,9 +20,25 @@ require 'csv'<br>
 require 'logger'<br>
 require 'highline/import'<br></code></pre>
 
+#### `API_TOKEN` (Required)
+
+The best way to get an `API_TOKEN` is to [create a new Slack App](https://api.slack.com/apps/new).
+
+Once you create and name your app on your team, go to "OAuth & Permissions" to give it the following permission scopes:
+
+- `channels:history`
+- `channels:read`
+- `channels:write`
+- `chat:write:bot`
+- `chat:write:user`
+- `emoji:read`
+- `users:read`
+
+After saving, you can copy the OAuth Access Token value from the top of the same screen. It probably starts with `xox`.
+
 ## Proper Usage
 
-#### RECON_SLACKR
+#### Recon_Slackr
 
 The **Recon** app creates a file called <code>slackr_channels.db</code>.  It stores each public channels last active message date. 
 
@@ -31,7 +46,7 @@ It will also create a copy of the last day's run db to use as a comparison and b
 
 **Recon should be setup to run daily via cron.**
 
-#### ARCHIVER_SLACKR
+#### Archiver_Slackr
 
 The **Archiver** app can be used to either:
 
