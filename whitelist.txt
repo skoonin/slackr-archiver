@@ -17,3 +17,5 @@ _breaking_lite
 _breaking_lite_1
 _breaking_lite_2
 push
+it_maintenance
+tumblr_events

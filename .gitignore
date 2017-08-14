@@ -33,3 +33,4 @@ slackr_channels_db.last
 slackr_channels.db.last
 slackr_channels.db
 slackr_archiver.log
+slackr_recon.log
