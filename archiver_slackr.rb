@@ -95,7 +95,7 @@ Slack.configure do |config|
   fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
  end
 client = Slack::Web::Client.new
-archiver_log { "Slack API is accessible and active."}
+archiver_log.info { "Slack API is accessible and active."}
 
 archiver_log.info { "Checking for channels that haven't been touched for #{days_inactive_threshold} days." }
 
@@ -158,7 +158,7 @@ elsif run_mode == "NOTIFY"
     #   channel: channel_id,
     #   text: "Hello! This channel looks like it hasn't been used in a while! Please note that it is now marked to be archived in 60 Days. Please contact IT to request this channel be whitelisted if you want to keep it."
     #   )
-       archiver_log.info { "Notified #{channel_name} that the channel is now marked for death." }
+        archiver_log.info { "Notified #{channel_name} that the channel is now marked for death." }
        # sleep for slack rate limiting
       sleep 1
   end
