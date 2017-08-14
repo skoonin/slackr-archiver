@@ -25,30 +25,30 @@ channels_to_archive = []
 run_date = Time.now
 
 # command line arguments info
-if ["--help", "-h", "?", nil].include? ARGV[0] 
-	STDERR.puts("Missing Flag.\n\n")
-	puts "The Slackr Archiver\n"
-	puts "v1, 2017\n\n"
-	puts "Usage:  archiver_slackr <flag>"
-	puts "    -d, --dry-run                 runs in DRY-RUN mode (do this first! no channels will be archived)"
-	puts "    -n, --notify                  runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)"
-	puts "                                        *** NOTE: this will reset a channels `Days Till Archive` to the day you run this"
-	puts "    -a, --archive, --active       runs in ACTIVE mode. (this will archive channels)"
-	puts "    -h, --help, ?                 this handy help screen\n\n"
-	exit(false)		
+if ["--help", "-h", "?", nil].include? ARGV[0]
+  STDERR.puts("Missing Flag.\n\n")
+  puts "The Slackr Archiver\n"
+  puts "v1, 2017\n\n"
+  puts "Usage:  archiver_slackr <flag>"
+  puts "    -d, --dry-run                 runs in DRY-RUN mode (do this first! no channels will be archived)"
+  puts "    -n, --notify                  runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)"
+  puts "                                        *** NOTE: this will reset a channels `Days Till Archive` to the day you run this"
+  puts "    -a, --archive, --active       runs in ACTIVE mode. (this will archive channels)"
+  puts "    -h, --help, ?                 this handy help screen\n\n"
+  exit(false)
 elsif ["-d", "--dry-run"].include? ARGV[0]
-	puts "Now running Slackr Archivr. \nYou have selected DRY-RUN mode."
-	run_mode = "DRY"
+  puts "Now running Slackr Archivr. \nYou have selected DRY-RUN mode."
+  run_mode = "DRY"
 elsif ["-a", "--live", "--active"].include? ARGV[0]
-	puts "Now running Slackr Archivr. \nYou have selected ACTIVE mode."
-	exit unless HighLine.agree("This will immediately archive channels. Make sure you've done a dry run first. Do you want to proceed? (yes/no)")
-	puts "Proceeding..."
-	run_mode = "ACTIVE"
+  puts "Now running Slackr Archivr. \nYou have selected ACTIVE mode."
+  exit unless HighLine.agree("This will immediately archive channels. Make sure you've done a dry run first. Do you want to proceed? (yes/no)")
+  puts "Proceeding..."
+  run_mode = "ACTIVE"
 elsif ["-n", "--notify"].include? ARGV[0]
-	puts "Now running Slackr Archivr. \nYou have selected NOTIFY mode."
-	exit unless HighLine.agree("This will immediately notify channels. Make sure you've done a dry run first. Do you want to proceed? (yes/no)")
-	puts "Proceeding..."
-	run_mode = "NOTIFY"
+  puts "Now running Slackr Archivr. \nYou have selected NOTIFY mode."
+  exit unless HighLine.agree("This will immediately notify channels. Make sure you've done a dry run first. Do you want to proceed? (yes/no)")
+  puts "Proceeding..."
+  run_mode = "NOTIFY"
 end
 
 archiver_log.info { " ****** Beginning Slackr-Archiver in #{run_mode} Mode ****** " }
@@ -70,24 +70,24 @@ archiver_log.info { "Checking for Whitelist..." }
 
 # channel whitelist file is checked for and created if not found.
 if File.exists?("whitelist.txt")
-	channel_whitelist = CSV.read("whitelist.txt").flatten 
-	channel_whitelist.shift
-	archiver_log.info { "Whitelist found and loaded." }
+  channel_whitelist = CSV.read("whitelist.txt").flatten
+  channel_whitelist.shift
+  archiver_log.info { "Whitelist found and loaded." }
 else
-	File.open("whitelist.txt", "w") { |x| x.write("channel_name") }
-	archiver_log.info { "Whitelist not found. Created blank file: whitelist.txt" }
+  File.open("whitelist.txt", "w") { |x| x.write("channel_name") }
+  archiver_log.info { "Whitelist not found. Created blank file: whitelist.txt" }
 end
 
 # checking for existing of historical channel archive list
 if File.exists?("slackr_archived_channels.log")
-	archiver_log.info { "Historical Archived Channels List found." }
+  archiver_log.info { "Historical Archived Channels List found." }
 else
-	File.open("slackr_archived_channels.log", "w") { |x| x.write("Channels Archived by Slackr Archiver:\n") }   
-	archiver_log.info { "Historical Archived Channels List not found. Created blank file: slackr_archived_channels.log" }
+  File.open("slackr_archived_channels.log", "w") { |x| x.write("Channels Archived by Slackr Archiver:\n") }
+  archiver_log.info { "Historical Archived Channels List not found. Created blank file: slackr_archived_channels.log" }
 end
 
 archiver_log.info { "Data loaded successfully." }
-archiver_log.info { "Verifying API Token and activating client." }
+archiver_log.info { "Verifying Slack API Token and activating client." }
 
 # activate API TOKEN in ENV for slack client
 Slack.configure do |config|
@@ -95,6 +95,7 @@ Slack.configure do |config|
   fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
  end
 client = Slack::Web::Client.new
+archiver_log { "Slack API is accessible and active."}
 
 archiver_log.info { "Checking for channels that haven't been touched for #{days_inactive_threshold} days." }
 
@@ -136,33 +137,33 @@ if run_mode == "ACTIVE"
     channel_name = channel[:channel_name]
     # client.channels_archive(channel: channel_id)
     # client.chat_postMessage(
-		# 	channel: channel_id, 
-		# 	text: "Hello! This channel has been found ded and has been archived. Please contact IT with any memoriam or resurrection requests."
-		# 	)
+    #   channel: channel_id,
+    #   text: "Hello! This channel has been found ded and has been archived. Please contact IT with any memoriam or resurrection requests."
+    #   )
     archiver_log.info { "[#{channel_name}] has been archived!" }
     # add it to the historical log of archived_channels
     File.open("slackr_archived_channels.log", "a") { |log| log.write("#{channel_name} was archived at #{run_date}\n") }
     # sleep for slack rate limiting
     sleep 1
-	end
+  end
 elsif run_mode == "DRY"
   archiver_log.info { "****** Dry-Run is active. No Channels Will Be Archived ******" }
   would_be_archived = channels_to_archive.map { |x| x[:channel_name] }
   archiver_log.info {" ****** Channels that would've been archived: #{would_be_archived} "}
 elsif run_mode == "NOTIFY"
-	notify_channels.each do |channel|
-	    channel_id = channel[:channel_id]
-	    channel_name = channel[:channel_name]
-		# client.chat_postMessage(
-		# 	channel: channel_id, 
-		# 	text: "Hello! This channel looks like it hasn't been used in a while! Please note that it is now marked to be archived in 60 Days. Please contact IT to request this channel be whitelisted if you want to keep it."
-		# 	)
-	   	archiver_log.info { "Notified #{channel_name} that the channel is now marked for death." }
-	   	# sleep for slack rate limiting
-    	sleep 1
-	end
+  notify_channels.each do |channel|
+      channel_id = channel[:channel_id]
+      channel_name = channel[:channel_name]
+    # client.chat_postMessage(
+    #   channel: channel_id,
+    #   text: "Hello! This channel looks like it hasn't been used in a while! Please note that it is now marked to be archived in 60 Days. Please contact IT to request this channel be whitelisted if you want to keep it."
+    #   )
+       archiver_log.info { "Notified #{channel_name} that the channel is now marked for death." }
+       # sleep for slack rate limiting
+      sleep 1
+  end
 else
-	archiver_log.info { "Erm... Something strange happened."}
+  archiver_log.info { "Erm... Something strange happened."}
 end
 
 # for command line output, strip keys
@@ -177,7 +178,7 @@ puts "  Total Channels Archived => #{channels_to_archive.count} " if ["ACTIVE", 
 puts "  Total Channels Notified => #{notify_channels.count} " if ["NOTIFY", "DRY"].include?(run_mode)
 puts "\n  Channels Archived: #{channels_to_archive} \n\n" if ["ACTIVE", "DRY"].include?(run_mode)
 puts "  Channels Notified: #{notify_channels} \n\n" if ["NOTIFY", "DRY"].include?(run_mode)
-puts"See slackr_archiver.log for details." 
+puts"See slackr_archiver.log for details."
 puts "#{run_mode} Mode Run Complete. It's ok, no changes were made IRL.\n\n" if ["DRY"].include?(run_mode)
 puts "#{run_mode} Mode Run Complete. \n\n" if ["NOTIFY", "ACTIVE"].include?(run_mode)
 

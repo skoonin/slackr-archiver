@@ -37,11 +37,11 @@ if File.exists?("slackr_channels.db")
   prev_run_data = data.map { |d| d.to_hash }
   recon_log.info { "Log file found.  Renamed and loaded."}
 elsif File.exists?("slackr_channels.db.last")
-	recon_log.info { " Log file NOT found. .last backup file found and loaded instead."}
+  recon_log.info { " Log file NOT found. .last backup file found and loaded instead."}
   data = CSV.read("slackr_channels.db.last", { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
-  	prev_run_data = data.map { |d| d.to_hash }
+    prev_run_data = data.map { |d| d.to_hash }
 else
-	recon_log.info { " No log files found. Proceeding with no historical data."}
+  recon_log.info { " No log files found. Proceeding with no historical data."}
   prev_run_data = [{ "channel_id" => "00" }]
 end
 
