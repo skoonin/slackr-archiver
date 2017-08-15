@@ -5,3 +5,4 @@ gem 'slack-ruby-client',
 gem 'logger',
 gem 'date',
 gem 'csv'
+gem 'highline'
