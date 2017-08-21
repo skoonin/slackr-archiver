@@ -53,7 +53,6 @@ The **Archiver** app can be used to either:
 + Perform a **Dry-Run**. This should always be done first. 
 + **Archive** channels with 60+ days of inactivity
 + **Notify** dead channels with 30+ days of inactivity
-  + Note: This will reset a channels activity and it will become "active" again. 
   + To edit the message text, you need to edit <code>archiver_slackr.rb</code>
 + You can alter the Inactivity time in <code>archiver_slackr.rb</code>
 
@@ -61,10 +60,11 @@ The **Archiver** app can be used to either:
 Usage:  archiver_slackr <flag>
     -d, --dry-run                 runs in DRY-RUN mode (do this first! no channels will be archived)
     -n, --notify                  runs in NOTIFY mode. (sends a polite message to any channels that are 30 days inactive (but less than 60)
-                                        *** NOTE: this will reset a channels `Days Till Archive` to the day you run this
     -a, --archive, --active       runs in ACTIVE mode. (this will archive channels)
     -h, --help, ?                 this handy help screen
     </code></pre>
+
+An example would be to run <code>ruby archiver_slackr -d</code>code> to do a dry run.
 
 ### Whitelist
 
@@ -80,4 +80,3 @@ All activity is logged in the files:
 ### Future updates: 
 + Allow message to be specified on the command line
 + Allow number of recent messages parsed to be specified on command line
-+ Create a way to not reset notified channels activity for 30 days after it's been done. 
