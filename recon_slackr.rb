@@ -18,7 +18,9 @@ puts "Beginning Recon run."
 
 # Blacklist: add to this array any message subtypes you don't want to include (check slack's api for info)
 # currently not including 'bot_message' since we have lots of channels that use mostly or only
-subtype_blacklist = ['channel_leave', 'channel_join', 'channel_name', 'channel_purpose', 'channel_topic']
+# to make sure a message by a user is ignored, add it to the username_blacklist array.
+subtype_blacklist = ['channel_leave', 'channel_join', 'channel_name', 'channel_unarchive', 'channel_purpose', 'channel_topic']
+username_blacklist = ['Slackr-Archiver']
 channel_count = 3
 
 # don't edit the below
@@ -71,11 +73,14 @@ non_archived_channels.each do |channel|
     msg_date = msg['ts']
     msg_text = msg['text']
     msg_subtype = msg['subtype']
+    msg_username = msg['username']
     msg_hdate = Time.at(msg_date.to_i).to_datetime
 
-    if !subtype_blacklist.include?(msg_subtype)
-      if msg_hdate >= Time.now - 48.hours
-         recent_msg_dates.push(msg_hdate)
+    if !username_blacklist.include?(msg_username)
+      if !subtype_blacklist.include?(msg_subtype)
+        if msg_hdate >= Time.now - 48.hours
+           recent_msg_dates.push(msg_hdate)
+        end
       end
     end
   end
